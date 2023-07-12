@@ -8,11 +8,11 @@ import { UserSchema, User } from './schema/mongo.schema';
 
 @Module({
   controllers: [UserController],
-  providers: [UserServices, JwtModule],
+  providers: [UserServices],
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    JwtModule.register({ secret: process.env.secretKeyJwt }),
+    JwtModule.register({ secret: process.env.SECRET_KEY_JWT }),
   ],
 })
 export class UserModule {}

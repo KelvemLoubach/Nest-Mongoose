@@ -19,8 +19,8 @@ export class UserController {
 
   @Post('login')
   async loginUser(
-    @Body() loginData: CreateUserDto,
-  ): Promise<string | { loginOk: string; accessToken: string }> {
+    @Body() loginData: Partial<CreateUserDto>,
+  ): Promise<string | { loginOk: string, accessToken: string }> {
     return await this.userServices.loginUser(loginData);
   }
 

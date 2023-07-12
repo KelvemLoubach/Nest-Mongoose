@@ -11,12 +11,14 @@ export class UserServices {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async createNewUser(
     createUser: CreateUserDto,
   ): Promise<{ name: string; email: string; id: string } | null> {
     const passwordHash = await bcrypt.hash(createUser.password, 10);
+    createUser.email = createUser.email.toLowerCase();
+
     createUser.password = passwordHash;
     const userCreated = await this.userModel.create(createUser);
     const { name, email, id } = userCreated;
@@ -25,7 +27,8 @@ export class UserServices {
 
   async loginUser(loginDataController: Partial<CreateUserDto>) {
     const { email, password } = loginDataController;
-    const checkUserAlreadyRegistered = await this.userModel.findOne({ email });
+    const emailLowerCase = email.toLowerCase();
+    const checkUserAlreadyRegistered = await this.userModel.findOne({ email: emailLowerCase });
 
     if (!checkUserAlreadyRegistered) {
       return 'Unregistered user!';
@@ -65,7 +68,6 @@ export class UserServices {
     return await this.userModel
       .findByIdAndUpdate(idControllerUpdate, newDataUser, {
         returnDocument: 'after',
-      })
-      .exec();
+      });
   }
 }
